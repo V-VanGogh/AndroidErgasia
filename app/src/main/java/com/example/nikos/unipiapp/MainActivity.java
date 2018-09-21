@@ -3,39 +3,116 @@ package com.example.nikos.unipiapp;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.google.android.gms.common.api.Api;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.gson.JsonObject;
 
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity{
 
-    private ListView bookListView;
-
+    ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bookListView = (ListView) findViewById(R.id.list1);
+        listView = findViewById(R.id.listNews);
 
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl("http://openlibrary.org/authors/OL1A.json")
-                .addConverterFactory(GsonConverterFactory.create());
-
-        Retrofit retrofit = builder.build();
-
+        getNews();
 
 
 
 
     }
+
+    private  void getNews() {
+        // Retrofit object
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(NewsApi.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        //Interface
+        NewsApi newsApi = retrofit.create(NewsApi.class);
+
+        newsApi.getNews().enqueue(new Callback<Newsbeta>() {
+            @Override
+            public void onResponse(Call<Newsbeta> call, Response<Newsbeta> response) {
+                if (response.isSuccessful()) {
+                    Newsbeta news = response.body();
+                    Log.i("News:", news.getStatus());
+                } else {
+                    Log.e("Failed:", "das" + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Newsbeta> call, Throwable t) {
+                Log.e("Failed error", "dasdasdsada"+t.getMessage());
+            }
+        });
+        //Call object
+//        Call<News> call = newsApi.getNews();
+//
+//        //make the call
+//        call.enqueue(new Callback<News>() {
+//            @Override
+//            public void onResponse(Call<News> call, Response<News> response) {
+//                Log.d("NUmber","fafa");
+//
+//                response.body();
+//                String title = response.body().getStatus();
+//
+//            Log.d("status", title);
+//            }
+//
+//            @Override
+//            public void onFailure(Call<Newsbeta> call, Throwable t) {
+//                Log.d("NUmber","den to thelo");
+//            }
+//        });
+
+
+//        call.enqueue(new Callback<Newsbeta>() {
+//            @Override
+//            public void onResponse(Callback<Newsbeta> call, Response<Newsbeta> response) {
+//                Log.d("mpainei","nai");
+//
+//                List<Newsbeta> newsList = (List<Newsbeta>) response.body();
+//
+//                String[] news = new String[newsList.size()];
+//
+//                for (int i = 0; i< newsList.size(); i++) {
+//                    news[i] = newsList.get(i).getStatus();
+//                }
+//
+//                listView.setAdapter(new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_list_item_1,news));
+//            }
+//
+//            @Override
+//            public void onFailure(Callback<Newsbeta> call, Throwable t) {
+//                Toast.makeText(getApplicationContext(),t.getMessage(), Toast.LENGTH_SHORT).show();
+//                Log.d("error",t.getMessage());
+//            }
+//        });
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
