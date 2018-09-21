@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity{
                     NewsDataModel news = response.body();
                     Log.i("Status:", news.getStatus());
                     Log.i("TotalResult:", news.getTotalResults().toString());
-                    Log.i("Articles:", news.getArticles().toString());
+                    Log.i("Articles:", news.getArticles().get(1).getTitle().toString());
                 } else {
                     Log.e("Failed:", "das" + response.code());
                 }
