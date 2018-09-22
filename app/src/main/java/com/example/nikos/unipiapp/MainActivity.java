@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -25,6 +27,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,23 +41,20 @@ public class MainActivity extends DropDownMenu {
     FirebaseAuth mAuth;
 
 
-
     ArrayList<String> newsArticles = new ArrayList<String>();
     ArrayList<String> newsArticlesImagesUrl = new ArrayList<String>();
-    NewsListAdapter news_adapter;
 
 
     //Example
     ArrayList<NewsDataModel> newsArrayList;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
-//      img = findViewById(R.id.imageView2);
-        newsArrayList= new ArrayList<>();
+
+     //   newsArrayList = new ArrayList<>();
 
 
 //        Toolbar toolbar;
@@ -62,8 +62,6 @@ public class MainActivity extends DropDownMenu {
 
 
         getNews();
-//        init();
-//        listView.setAdapter(news_adapter);
 
     }
 
@@ -81,25 +79,35 @@ public class MainActivity extends DropDownMenu {
             @Override
             public void onResponse(Call<NewsDataModel> call, Response<NewsDataModel> response) {
                 if (response.isSuccessful()) {
-                    NewsDataModel news = response.body();
+                    final NewsDataModel news = response.body();
                     Log.i("Status:", news.getStatus());
                     Log.i("TotalResult:", news.getTotalResults().toString());
                     for (int i = 0; i < news.getArticles().size(); i++) {
-                       newsArrayList.add(new NewsDataModel(
-                               news.getStatus(),
-                               news.getTotalResults(),
-                               news.getArticles()
-                                              ));
+                        newsArrayList.add(new NewsDataModel(
+                                news.getStatus(),
+                                news.getTotalResults(),
+                                news.getArticles()
+                        ));
 
 
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                ArrayList<NewsDataModel> setNewsList = (ArrayList<NewsDataModel>) newsArrayList;
+                                Intent setAnotherActivities = new Intent(MainActivity.this, NewsDisplayActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("ARRAYLIST",setNewsList);
+                                setAnotherActivities.putExtras(bundle);
+                                startActivity(setAnotherActivities);
+
+                            }
+                        });
 
 
-
-
-                        Log.i("Articles:", news.getArticles().get(i).getTitle().toString());
-                        Log.i("Articles:", news.getArticles().get(i).getUrlToImage().toString());
-                        newsArticles.add(news.getArticles().get(i).getTitle().toString());
-                        newsArticlesImagesUrl.add(news.getArticles().get(i).getUrlToImage().toString());
+//                        Log.i("Articles:", news.getArticles().get(i).getTitle().toString());
+//                        Log.i("Articles:", news.getArticles().get(i).getUrlToImage().toString());
+//                        newsArticles.add(news.getArticles().get(i).getTitle().toString());
+//                        newsArticlesImagesUrl.add(news.getArticles().get(i).getUrlToImage().toString());
 
 
                     }
@@ -108,19 +116,8 @@ public class MainActivity extends DropDownMenu {
                 }
 
 
-                NewsListAdapter adapter =  new NewsListAdapter(getApplicationContext(), R.layout.listview_layout, newsArrayList);
+                NewsListAdapter adapter = new NewsListAdapter(getApplicationContext(), R.layout.listview_layout, newsArrayList);
                 listView.setAdapter(adapter);
-
-
-
-
-
-//                ArrayAdapter<String> adapter = new ArrayAdapter<String>(listView.getContext(), android.R.layout.simple_list_item_1, newsArticles);
-//                listView.setAdapter(adapter);
-
-//                Picasso.with(getApplicationContext())
-//                        .load("https://as01.epimg.net/baloncesto/imagenes/2018/09/10/mas_baloncesto/1536596847_456306_1536597028_noticia_normal.jpg")
-//                       .into(img);
 
 
             }
@@ -142,11 +139,6 @@ public class MainActivity extends DropDownMenu {
             startActivity(intent);
         }
     }
-
-//    private void init() {
-//        news_adapter = new NewsListAdapter(this,newsArticles, newsArticlesImagesUrl );
-//        listView = (ListView) findViewById(R.id.listNews);
-//    }
 
 
 }
