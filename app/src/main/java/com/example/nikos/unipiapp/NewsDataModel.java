@@ -16,6 +16,12 @@ public class NewsDataModel {
     @Expose
     private List<Article> articles = null;
 
+    public NewsDataModel(String status, Integer totalResults, List<Article> articles) {
+        this.status = status;
+        this.totalResults = totalResults;
+        this.articles = articles;
+    }
+
     public String getStatus() {
         return status;
     }
