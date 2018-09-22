@@ -32,6 +32,7 @@ public class MainActivity extends DropDownMenu {
         mAuth = FirebaseAuth.getInstance();
 
 
+
         listView = findViewById(R.id.listNews);
 
         getNews();
