@@ -47,7 +47,7 @@ public class NewsDisplayActivity extends AppCompatActivity {
 
         title = article.get(position).getTitle();
         content = article.get(position).getContent();
-        name = article.get(position).getSource().getName();
+//        name = article.get(position).getSource().getName();
         urlImage = article.get(position).getUrlToImage();
 
         //--------- Stop Cases ---------//
