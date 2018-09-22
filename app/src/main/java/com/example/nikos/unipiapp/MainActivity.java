@@ -16,14 +16,16 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends DropDownMenu{
 
     ListView listView;
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mAuth = FirebaseAuth.getInstance();
 
         listView = findViewById(R.id.listNews);
 
@@ -63,34 +65,15 @@ public class MainActivity extends AppCompatActivity{
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.drop_down_menu,menu);
-        return super.onCreateOptionsMenu(menu);
-    }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.main){
-            startActivity(new Intent(this,MainActivity.class));
+    protected void onStart() {
+        super.onStart();
+        if (mAuth.getCurrentUser() == null) {
+            finish();
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
         }
-        else if(item.getItemId() == R.id.profile){
-            startActivity(new Intent(this,ProfileActivity.class));
-        }
-        else if(item.getItemId() == R.id.todo1){
-            startActivity(new Intent(this,MainActivity.class));
-        }
-        else if(item.getItemId() == R.id.signout){
-            logout();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void logout() {
-        FirebaseAuth.getInstance().signOut();
-        finish();
-        Intent logoutIntentDropDown = new Intent(getApplicationContext(),LoginActivity.class);
-        startActivity(logoutIntentDropDown);
     }
 
 

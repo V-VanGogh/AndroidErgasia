@@ -27,7 +27,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 
-public class ProfileActivity extends MainActivity {
+public class ProfileActivity extends DropDownMenu {
 
     private static final int PIC = 400;
     ImageView profilePic;
