@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Message;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -54,7 +57,7 @@ public class MainActivity extends DropDownMenu {
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
 
-     //   newsArrayList = new ArrayList<>();
+        newsArrayList = new ArrayList<>();
 
 
 //        Toolbar toolbar;
@@ -62,6 +65,7 @@ public class MainActivity extends DropDownMenu {
 
 
         getNews();
+
 
     }
 
@@ -79,37 +83,51 @@ public class MainActivity extends DropDownMenu {
             @Override
             public void onResponse(Call<NewsDataModel> call, Response<NewsDataModel> response) {
                 if (response.isSuccessful()) {
-                    final NewsDataModel news = response.body();
+                    NewsDataModel news = response.body();
                     Log.i("Status:", news.getStatus());
                     Log.i("TotalResult:", news.getTotalResults().toString());
                     for (int i = 0; i < news.getArticles().size(); i++) {
                         newsArrayList.add(new NewsDataModel(
-                                news.getStatus(),
-                                news.getTotalResults(),
-                                news.getArticles()
-                        ));
-
+                                        news.getStatus(),
+                                        news.getTotalResults(),
+                                        news.getArticles()
+                                )
+                        );
 
                         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                ArrayList<NewsDataModel> setNewsList = (ArrayList<NewsDataModel>) newsArrayList;
-                                Intent setAnotherActivities = new Intent(MainActivity.this, NewsDisplayActivity.class);
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable("ARRAYLIST",setNewsList);
-                                setAnotherActivities.putExtras(bundle);
-                                startActivity(setAnotherActivities);
 
+                                //--------- Start Cases ---------//
+                                //First Case
+//                                String title = newsArrayList.get(position).getArticles().get(position).getTitle();
+//                                String content = newsArrayList.get(position).getArticles().get(position).getContent();
+//                                String name = newsArrayList.get(position).getArticles().get(position).getSource().getName();
+//                                String urlImage = newsArrayList.get(position).getArticles().get(position).getUrlToImage();
+//                                bundle.putString("TITLE",title);
+//                                bundle.putString("CONTENT",content);
+//                                bundle.putString("AUTHOR",name);
+//                                bundle.putString("URLIMAGE",urlImage);
+
+                                //Second Case
+                                List<Article> setNewsList = newsArrayList.get(position).getArticles();
+                                Intent newsDisplayActivity = new Intent(MainActivity.this, NewsDisplayActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelableArrayList("Articles", (ArrayList<? extends Parcelable>) setNewsList);
+                                bundle.putInt("Position", position);
+                                newsDisplayActivity.putExtras(bundle);
+                                startActivity(newsDisplayActivity);
+
+                                //--------- Stop Cases ---------//
+
+                                //Outpout
+                                Log.d("Messege", newsArrayList.get(position).getArticles().get(position).toString());
                             }
                         });
-
-
 //                        Log.i("Articles:", news.getArticles().get(i).getTitle().toString());
 //                        Log.i("Articles:", news.getArticles().get(i).getUrlToImage().toString());
 //                        newsArticles.add(news.getArticles().get(i).getTitle().toString());
 //                        newsArticlesImagesUrl.add(news.getArticles().get(i).getUrlToImage().toString());
-
-
                     }
                 } else {
                     Log.e("Failed:", "das" + response.code());
