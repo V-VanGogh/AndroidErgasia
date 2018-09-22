@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -30,7 +31,9 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,7 +45,9 @@ public class MainActivity extends DropDownMenu {
 
     ListView listView;
     FirebaseAuth mAuth;
+    SearchView searchView;
 
+    //String query = "greece";
 
     ArrayList<String> newsArticles = new ArrayList<String>();
     ArrayList<String> newsArticlesImagesUrl = new ArrayList<String>();
@@ -62,14 +67,25 @@ public class MainActivity extends DropDownMenu {
 
 //        Toolbar toolbar;
         listView = findViewById(R.id.listNews);
+        searchView = findViewById(R.id.SearchView);
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                getNews("greece");
+                Log.e("QUERY", searchView.toString());
+                return false;
+            }
 
-        getNews();
-
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
 
     }
 
-    private void getNews() {
+    private void getNews(String query) {
         // Retrofit object
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(NewsInterface.BASE_URL)
@@ -79,7 +95,7 @@ public class MainActivity extends DropDownMenu {
         //Interface
         NewsInterface newsInterface = retrofit.create(NewsInterface.class);
 
-        newsInterface.getNews().enqueue(new Callback<NewsDataModel>() {
+        newsInterface.getNews(query).enqueue(new Callback<NewsDataModel>() {
             @Override
             public void onResponse(Call<NewsDataModel> call, Response<NewsDataModel> response) {
                 if (response.isSuccessful()) {
@@ -157,6 +173,5 @@ public class MainActivity extends DropDownMenu {
             startActivity(intent);
         }
     }
-
 
 }
