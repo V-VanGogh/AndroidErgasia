@@ -134,6 +134,10 @@ public class NewsDisplayActivity extends AppCompatActivity {
                 FavoriteNewsInformation dataretrieval = post.getValue(FavoriteNewsInformation.class);
                 String favTitleRetrieval = dataretrieval.getTitle().toString();
                 Log.d("FavoriteNews",favTitleRetrieval);
+                if (favTitleRetrieval.contains(title)){
+                    favorite.setVisibility(View.GONE);
+                    favoritetrue.setVisibility(View.VISIBLE);
+                }
 
             }
 
