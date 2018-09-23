@@ -72,7 +72,7 @@ public class MainActivity extends DropDownMenu {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                getNews("greece");
+                getNews(query);
                 Log.e("QUERY", searchView.toString());
                 return false;
             }
@@ -116,23 +116,27 @@ public class MainActivity extends DropDownMenu {
 
                                 //--------- Start Cases ---------//
                                 //First Case
-//                                String title = newsArrayList.get(position).getArticles().get(position).getTitle();
-//                                String content = newsArrayList.get(position).getArticles().get(position).getContent();
-//                                String name = newsArrayList.get(position).getArticles().get(position).getSource().getName();
-//                                String urlImage = newsArrayList.get(position).getArticles().get(position).getUrlToImage();
-//                                bundle.putString("TITLE",title);
-//                                bundle.putString("CONTENT",content);
-//                                bundle.putString("AUTHOR",name);
-//                                bundle.putString("URLIMAGE",urlImage);
-
-                                //Second Case
-                                List<Article> setNewsList = newsArrayList.get(position).getArticles();
-                                Intent newsDisplayActivity = new Intent(MainActivity.this, NewsDisplayActivity.class);
+                                String title = newsArrayList.get(position).getArticles().get(position).getTitle();
+                                String content = newsArrayList.get(position).getArticles().get(position).getContent();
+                                String name = newsArrayList.get(position).getArticles().get(position).getSource().getName();
+                                String urlImage = newsArrayList.get(position).getArticles().get(position).getUrlToImage();
                                 Bundle bundle = new Bundle();
-                                bundle.putParcelableArrayList("Articles", (ArrayList<? extends Parcelable>) setNewsList);
-                                bundle.putInt("Position", position);
+                                bundle.putString("TITLE",title);
+                                bundle.putString("CONTENT",content);
+                                bundle.putString("NAME",name);
+                                bundle.putString("URLIMAGE",urlImage);
+                                Intent newsDisplayActivity = new Intent(MainActivity.this, NewsDisplayActivity.class);
                                 newsDisplayActivity.putExtras(bundle);
                                 startActivity(newsDisplayActivity);
+
+                                //Second Case
+//                                List<Article> setNewsList = newsArrayList.get(position).getArticles();
+//                                Intent newsDisplayActivity = new Intent(MainActivity.this, NewsDisplayActivity.class);
+//                                Bundle bundle = new Bundle();
+//                                bundle.putParcelableArrayList("Articles", (ArrayList<? extends Parcelable>) setNewsList);
+//                                bundle.putInt("Position", position);
+//                                newsDisplayActivity.putExtras(bundle);
+//                                startActivity(newsDisplayActivity);
 
                                 //--------- Stop Cases ---------//
 
