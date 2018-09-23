@@ -30,6 +30,7 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,6 +105,8 @@ public class NewsDisplayActivity extends AppCompatActivity {
 
         favorite = (ImageView) findViewById(R.id.imgFavoriteNot);
         favoritetrue = (ImageView) findViewById(R.id.imgFavorite);
+
+        // Add To Favorite //
         favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,10 +115,23 @@ public class NewsDisplayActivity extends AppCompatActivity {
 
                 favorite.setVisibility(View.GONE);
                 favoritetrue.setVisibility(View.VISIBLE);
+            }
+        });
 
+        // Remove to Favorite //
+        favoritetrue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                removeFavorite(title);
+
+                favorite.setVisibility(View.VISIBLE);
+                favoritetrue.setVisibility(View.GONE);
 
             }
         });
+
+
     }
 
     @Override
@@ -132,9 +148,19 @@ public class NewsDisplayActivity extends AppCompatActivity {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 DataSnapshot post = dataSnapshot;
                 FavoriteNewsInformation dataretrieval = post.getValue(FavoriteNewsInformation.class);
+                long countFav = post.getChildrenCount();
                 String favTitleRetrieval = dataretrieval.getTitle().toString();
-                Log.d("FavoriteNews",favTitleRetrieval);
-                if (favTitleRetrieval.contains(title)){
+                String favPushRetrieval = post.getKey();
+                String favPushTitle = favTitleRetrieval + "," + favPushRetrieval;
+                List<String> favTitleRetrievalList = new ArrayList<String>(Arrays.asList(favPushTitle.split(",")));
+
+
+                Log.d("FavoriteNews", favTitleRetrieval + " " + favPushTitle + " " + favTitleRetrievalList);
+                Log.d("FavoriteIDs", favPushRetrieval);
+
+
+                // Disable Stared if Article is Favorite //
+                if (favTitleRetrieval.contains(title)) {
                     favorite.setVisibility(View.GONE);
                     favoritetrue.setVisibility(View.VISIBLE);
                 }
@@ -169,6 +195,11 @@ public class NewsDisplayActivity extends AppCompatActivity {
         taskMap.put("source", name);
         taskMap.put("urlImage", urlImage);
         myRef.push().setValue(taskMap);
+    }
+
+    public void removeFavorite(String title) {
+        myRef.child(title)
+                .child("title").setValue(title);
     }
 
 }
