@@ -118,31 +118,61 @@ public class NewsDisplayActivity extends AppCompatActivity {
     }
 
 
-        @Override
-        protected void onStart () {
-            super.onStart();
-            if (mAuth.getCurrentUser() == null) {
-                finish();
-                android.content.Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mAuth.getCurrentUser() == null) {
+            finish();
+            android.content.Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+        }
+
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.i("FavoriteNews", "showData:");
+                // Get Post object and use the values to update the UI
+                DataSnapshot post = dataSnapshot;
+                FavoriteNewsInformation dataretrieval = post.child("-LN6uCiItf9P0mT_ELzP").getValue(FavoriteNewsInformation.class);
+                String stokalo = dataretrieval.getContent().toString();
+                // [START_EXCLUDE]
+                Log.d("FavoriteNews", stokalo );
+                // [END_EXCLUDE]
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                //showData(dataSnapshot);
             }
-        }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w("ERROR_RETRIEVE", "loadPost:onCancelled", databaseError.toException());
+                // [START_EXCLUDE]
+                Toast.makeText(NewsDisplayActivity.this, "Failed to load post.",
+                        Toast.LENGTH_SHORT).show();
+                // [END_EXCLUDE]
+            }
+        });
 
 
-        public void addFavorite (String title, String content, String name, String urlImage){
-
-            Map<String, Object> taskMap = new HashMap<>();
-            taskMap.put("title", title);
-            taskMap.put("Content", content);
-            taskMap.put("source", name);
-            taskMap.put("UrlImage", urlImage);
-            myRef.push().setValue(taskMap);
+    }
 
 
-            Log.i("patima", "addFavorite: PUSS");
+    public void addFavorite(String title, String content, String name, String urlImage) {
+
+        Map<String, Object> taskMap = new HashMap<>();
+        taskMap.put("title", title);
+        taskMap.put("content", content);
+        taskMap.put("source", name);
+        taskMap.put("urlImage", urlImage);
+        myRef.push().setValue(taskMap);
 
 
-        }
+        Log.i("patima", "addFavorite: PUSS");
+
+
+    }
 
 
 }
