@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -127,33 +128,67 @@ public class NewsDisplayActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
-
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.i("FavoriteNews", "showData:");
-                // Get Post object and use the values to update the UI
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 DataSnapshot post = dataSnapshot;
-                FavoriteNewsInformation dataretrieval = post.child("-LN6uCiItf9P0mT_ELzP").getValue(FavoriteNewsInformation.class);
-                String stokalo = dataretrieval.getContent().toString();
-                // [START_EXCLUDE]
-                Log.d("FavoriteNews", stokalo );
-                // [END_EXCLUDE]
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                //showData(dataSnapshot);
+                FavoriteNewsInformation dataretrieval = post.getValue(FavoriteNewsInformation.class);
+                Log.d("FavoriteNews", dataretrieval.getTitle().toString() );
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+//                Log.i("FavoriteNews", "showData:");
+//                DataSnapshot post = dataSnapshot;
+//                FavoriteNewsInformation dataretrieval = post.getValue(FavoriteNewsInformation.class);
+//                Log.d("FavoriteNews", dataretrieval.getTitle().toString() );
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//                Log.i("FavoriteNews", "showData:");
+//                DataSnapshot post = dataSnapshot;
+//                FavoriteNewsInformation dataretrieval = post.getValue(FavoriteNewsInformation.class);
+//                Log.d("FavoriteNews", dataretrieval.getTitle().toString() );
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
-                Log.w("ERROR_RETRIEVE", "loadPost:onCancelled", databaseError.toException());
-                // [START_EXCLUDE]
-                Toast.makeText(NewsDisplayActivity.this, "Failed to load post.",
-                        Toast.LENGTH_SHORT).show();
-                // [END_EXCLUDE]
+
             }
         });
+
+//        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                Log.i("FavoriteNews", "showData:");
+//                // Get Post object and use the values to update the UI
+//                DataSnapshot post = dataSnapshot;
+//                //FavoriteNewsInformation dataretrieval = post.  //child("-LN6uCiItf9P0mT_ELzP").getValue(FavoriteNewsInformation.class);
+//                //String stokalo = dataretrieval.getContent().toString();
+//                // [START_EXCLUDE]
+//                //Log.d("FavoriteNews", stokalo );
+//                // [END_EXCLUDE]
+//                // This method is called once with the initial value and again
+//                // whenever data at this location is updated.
+//                //showData(dataSnapshot);
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                // Getting Post failed, log a message
+//                Log.w("ERROR_RETRIEVE", "loadPost:onCancelled", databaseError.toException());
+//                // [START_EXCLUDE]
+//                Toast.makeText(NewsDisplayActivity.this, "Failed to load post.",
+//                        Toast.LENGTH_SHORT).show();
+//                // [END_EXCLUDE]
+//            }
+//        });
 
 
     }
@@ -166,6 +201,7 @@ public class NewsDisplayActivity extends AppCompatActivity {
         taskMap.put("content", content);
         taskMap.put("source", name);
         taskMap.put("urlImage", urlImage);
+   //     String mFavId = myRef.push().getKey();
         myRef.push().setValue(taskMap);
 
 
