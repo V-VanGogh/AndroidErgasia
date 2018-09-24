@@ -195,8 +195,6 @@ public class MainActivity extends DropDownMenu {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                                //--------- Start Cases ---------//
-                                //First Case
                                 String title = newsArrayList.get(position).getArticles().get(position).getTitle();
                                 String content = newsArrayList.get(position).getArticles().get(position).getContent();
                                 String name = newsArrayList.get(position).getArticles().get(position).getSource().getName();
@@ -210,14 +208,7 @@ public class MainActivity extends DropDownMenu {
                                 newsDisplayActivity.putExtras(bundle);
                                 startActivity(newsDisplayActivity);
 
-                                //Second Case
-//                                List<Article> setNewsList = newsArrayList.get(position).getArticles();
-//                                Intent newsDisplayActivity = new Intent(MainActivity.this, NewsDisplayActivity.class);
-//                                Bundle bundle = new Bundle();
-//                                bundle.putParcelableArrayList("Articles", (ArrayList<? extends Parcelable>) setNewsList);
-//                                bundle.putInt("Position", position);
-//                                newsDisplayActivity.putExtras(bundle);
-//                                startActivity(newsDisplayActivity);
+
 
                                 //--------- Stop Cases ---------//
 
@@ -225,10 +216,7 @@ public class MainActivity extends DropDownMenu {
                                 Log.d("Messege", newsArrayList.get(position).getArticles().get(position).toString());
                             }
                         });
-//                        Log.i("Articles:", news.getArticles().get(i).getTitle().toString());
-//                        Log.i("Articles:", news.getArticles().get(i).getUrlToImage().toString());
-//                        newsArticles.add(news.getArticles().get(i).getTitle().toString());
-//                        newsArticlesImagesUrl.add(news.getArticles().get(i).getUrlToImage().toString());
+
                     }
                 } else {
                     Log.e("Failed:", "das" + response.code());

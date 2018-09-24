@@ -15,5 +15,4 @@ public interface NewsInterface {
     @GET("everything?apiKey=53e8c365cc624c1288254b1f9402f6ff&x")
     Call<NewsDataModel> getNews(
             @Query("q") String q);
-//    List<NewsDataModel> news = (List<NewsDataModel>) new Gson().fromJson();
 }

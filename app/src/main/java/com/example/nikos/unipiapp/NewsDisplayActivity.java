@@ -63,24 +63,13 @@ public class NewsDisplayActivity extends DropDownMenu {
         mAuth = FirebaseAuth.getInstance();
 
 
-        //--------- Start Cases ---------//
 
-        //First Case
         title = this.getIntent().getExtras().getString("TITLE");
         content = this.getIntent().getExtras().getString("CONTENT");
         name = this.getIntent().getExtras().getString("NAME");
         urlImage = this.getIntent().getExtras().getString("URLIMAGE");
 
-        //Second Case
-//        List<Article> article = this.getIntent().getExtras().getParcelableArrayList("Articles");
-//        int position = this.getIntent().getExtras().getInt("Position");
-//
-//        title = article.get(position).getTitle();
-//        content = article.get(position).getContent();
-//        name = article.get(position).getSource().getName();
-//        urlImage = article.get(position).getUrlToImage();
 
-        //--------- Stop Cases ---------//
 
 
         // Use Content
