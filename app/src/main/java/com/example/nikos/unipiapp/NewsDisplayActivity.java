@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NewsDisplayActivity extends AppCompatActivity {
+public class NewsDisplayActivity extends DropDownMenu {
 
 
     TextView titleView;

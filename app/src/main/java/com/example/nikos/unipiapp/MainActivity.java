@@ -49,8 +49,7 @@ public class MainActivity extends DropDownMenu {
 
     //String query = "greece";
 
-    ArrayList<String> newsArticles = new ArrayList<String>();
-    ArrayList<String> newsArticlesImagesUrl = new ArrayList<String>();
+
 
 
     //Example
@@ -69,6 +68,8 @@ public class MainActivity extends DropDownMenu {
         listView = findViewById(R.id.listNews);
         searchView = findViewById(R.id.SearchView);
 
+
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -85,13 +86,96 @@ public class MainActivity extends DropDownMenu {
 
     }
 
-    private void getNews(String query) {
+    private void latestNews() {
         // Retrofit object
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(NewsInterface.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
+        //Interface
+        LatestNewsInterface latestNewsInterface = retrofit.create(LatestNewsInterface.class);
+
+        latestNewsInterface.getNews().enqueue(new Callback<NewsDataModel>() {
+            @Override
+            public void onResponse(Call<NewsDataModel> call, Response<NewsDataModel> response) {
+                if (response.isSuccessful()) {
+                    NewsDataModel news = response.body();
+                    Log.i("Status:", news.getStatus());
+                    Log.i("TotalResult:", news.getTotalResults().toString());
+                    for (int i = 0; i < news.getArticles().size(); i++) {
+                        newsArrayList.add(new NewsDataModel(
+                                        news.getStatus(),
+                                        news.getTotalResults(),
+                                        news.getArticles()
+                                )
+                        );
+
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                                //--------- Start Cases ---------//
+                                //First Case
+                                String title = newsArrayList.get(position).getArticles().get(position).getTitle();
+                                String content = newsArrayList.get(position).getArticles().get(position).getContent();
+                                String name = newsArrayList.get(position).getArticles().get(position).getSource().getName();
+                                String urlImage = newsArrayList.get(position).getArticles().get(position).getUrlToImage();
+                                Bundle bundle = new Bundle();
+                                bundle.putString("TITLE",title);
+                                bundle.putString("CONTENT",content);
+                                bundle.putString("NAME",name);
+                                bundle.putString("URLIMAGE",urlImage);
+                                Intent newsDisplayActivity = new Intent(MainActivity.this, NewsDisplayActivity.class);
+                                newsDisplayActivity.putExtras(bundle);
+                                startActivity(newsDisplayActivity);
+
+                                //Second Case
+//                                List<Article> setNewsList = newsArrayList.get(position).getArticles();
+//                                Intent newsDisplayActivity = new Intent(MainActivity.this, NewsDisplayActivity.class);
+//                                Bundle bundle = new Bundle();
+//                                bundle.putParcelableArrayList("Articles", (ArrayList<? extends Parcelable>) setNewsList);
+//                                bundle.putInt("Position", position);
+//                                newsDisplayActivity.putExtras(bundle);
+//                                startActivity(newsDisplayActivity);
+
+                                //--------- Stop Cases ---------//
+
+                                //Outpout
+                                Log.d("Messege", newsArrayList.get(position).getArticles().get(position).toString());
+                            }
+                        });
+//                        Log.i("Articles:", news.getArticles().get(i).getTitle().toString());
+//                        Log.i("Articles:", news.getArticles().get(i).getUrlToImage().toString());
+//                        newsArticles.add(news.getArticles().get(i).getTitle().toString());
+//                        newsArticlesImagesUrl.add(news.getArticles().get(i).getUrlToImage().toString());
+                    }
+                } else {
+                    Log.e("Failed:", "das" + response.code());
+                }
+
+
+                NewsListAdapter adapter = new NewsListAdapter(getApplicationContext(), R.layout.listview_layout, newsArrayList);
+                listView.setAdapter(adapter);
+
+
+            }
+
+            @Override
+            public void onFailure(Call<NewsDataModel> call, Throwable t) {
+                Log.e("Failed error", "dasdasdsada" + t.getMessage());
+            }
+        });
+    }
+
+
+    private void getNews(String query) {
+        // Retrofit object
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(NewsInterface.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        newsArrayList.clear();
         //Interface
         NewsInterface newsInterface = retrofit.create(NewsInterface.class);
 
@@ -176,6 +260,7 @@ public class MainActivity extends DropDownMenu {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
         }
+        latestNews();
     }
 
 }

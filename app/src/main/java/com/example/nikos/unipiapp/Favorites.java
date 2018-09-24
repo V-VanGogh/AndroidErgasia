@@ -1,5 +1,6 @@
 package com.example.nikos.unipiapp;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,7 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class Favorites extends AppCompatActivity {
+public class Favorites  extends DropDownMenu  {
 
     private static final String TAG = "ListFavorites";
 
@@ -88,7 +89,7 @@ public class Favorites extends AppCompatActivity {
     }
 
     private void showData(DataSnapshot dataSnapshot) {
-        for(DataSnapshot ds : dataSnapshot.getChildren()){
+        for (DataSnapshot ds : dataSnapshot.getChildren()) {
             DataSnapshot post = dataSnapshot;
             FavoriteNewsInformation dataretrieval = post.getValue(FavoriteNewsInformation.class);
             dataretrieval.getContent();
@@ -96,10 +97,10 @@ public class Favorites extends AppCompatActivity {
             dataretrieval.getTitle();
             dataretrieval.getUrlImage();
 
-            Log.d(TAG,"Content:" + dataretrieval.getContent());
-            Log.d(TAG,"Source:" + dataretrieval.getSource());
-            Log.d(TAG,"Title:" + dataretrieval.getTitle());
-            Log.d(TAG,"UrlImage:" + dataretrieval.getUrlImage());
+            Log.d(TAG, "Content:" + dataretrieval.getContent());
+            Log.d(TAG, "Source:" + dataretrieval.getSource());
+            Log.d(TAG, "Title:" + dataretrieval.getTitle());
+            Log.d(TAG, "UrlImage:" + dataretrieval.getUrlImage());
 
             ArrayList<String> array = new ArrayList<>();
             array.add(dataretrieval.getContent());
@@ -107,8 +108,8 @@ public class Favorites extends AppCompatActivity {
             array.add(dataretrieval.getTitle());
             array.add(dataretrieval.getUrlImage());
 
-              ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,array);
-              fListView.setAdapter(adapter);
+            ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, array);
+            fListView.setAdapter(adapter);
 
         }
     }
@@ -117,17 +118,22 @@ public class Favorites extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
+        if (mAuth.getCurrentUser() == null) {
+            finish();
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (mAuthListener !=null){
+        if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
 
-    private void toastMessage(String message){
-        Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
+    private void toastMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
