@@ -40,7 +40,7 @@ public class Favorites extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference();
+        myRef = mFirebaseDatabase.getReference("Favorites/").child(mAuth.getUid());
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
 
@@ -61,7 +61,7 @@ public class Favorites extends AppCompatActivity {
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    showData(dataSnapshot);
+                showData(dataSnapshot);
             }
 
             @Override
@@ -89,11 +89,12 @@ public class Favorites extends AppCompatActivity {
 
     private void showData(DataSnapshot dataSnapshot) {
         for(DataSnapshot ds : dataSnapshot.getChildren()){
-            FavoriteNewsInformation dataretrieval = new FavoriteNewsInformation();
-            dataretrieval.setContent(ds.child(userID).getValue(FavoriteNewsInformation.class).getContent());
-            dataretrieval.setSource(ds.child(userID).getValue(FavoriteNewsInformation.class).getSource());
-            dataretrieval.setTitle(ds.child(userID).getValue(FavoriteNewsInformation.class).getTitle());
-            dataretrieval.setUrlImage(ds.child(userID).getValue(FavoriteNewsInformation.class).getUrlImage());
+            DataSnapshot post = dataSnapshot;
+            FavoriteNewsInformation dataretrieval = post.getValue(FavoriteNewsInformation.class);
+            dataretrieval.getContent();
+            dataretrieval.getSource();
+            dataretrieval.getTitle();
+            dataretrieval.getUrlImage();
 
             Log.d(TAG,"Content:" + dataretrieval.getContent());
             Log.d(TAG,"Source:" + dataretrieval.getSource());
@@ -106,8 +107,8 @@ public class Favorites extends AppCompatActivity {
             array.add(dataretrieval.getTitle());
             array.add(dataretrieval.getUrlImage());
 
-            ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,array);
-            fListView.setAdapter(adapter);
+              ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,array);
+              fListView.setAdapter(adapter);
 
         }
     }

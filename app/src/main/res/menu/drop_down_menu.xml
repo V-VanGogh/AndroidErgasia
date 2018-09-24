@@ -9,8 +9,8 @@
         android:id="@+id/profile"
         android:title="Profile"></item>
     <item
-        android:id="@+id/todo1"
-        android:title="ToDo1"></item>
+        android:id="@+id/favorites"
+        android:title="Favorites"></item>
     <item
         android:id="@+id/signout"
         android:title="Sign Out"></item>
