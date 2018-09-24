@@ -149,26 +149,23 @@ public class NewsDisplayActivity extends AppCompatActivity {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 DataSnapshot post = dataSnapshot;
                 FavoriteNewsInformation dataretrieval = post.getValue(FavoriteNewsInformation.class);
-                Log.d("FavoriteNews", dataretrieval.getTitle().toString());
-
-                // -- Dokimes Eksagogis se lista -- //
-                long countFav = post.getChildrenCount();
-                String favTitleRetrieval = dataretrieval.getTitle().toString();
-                String favPushRetrieval = post.getKey();
-                String favPushTitle = favTitleRetrieval + "," + favPushRetrieval;
-                List<String> favTitleRetrievalList = new ArrayList<String>(Arrays.asList(favPushTitle.split(",")));
-                // -- Telos Dokimes Eksagogis se lista -- //
-
-                Log.d("FavoriteNews", favTitleRetrieval + " " + favPushTitle + " " + favTitleRetrievalList);
-                Log.d("FavoriteIDs", favPushRetrieval);
-
 
                 // Disable Stared if Article is Favorite //
+                String favTitleRetrieval = dataretrieval.getTitle().toString();
+                Log.d("FavoriteNews", dataretrieval.getTitle().toString());
                 if (favTitleRetrieval.contains(title)) {
                     favorite.setVisibility(View.GONE);
                     favoritetrue.setVisibility(View.VISIBLE);
                 }
 
+                // -- Dokimes Eksagogis se lista -- //
+                long countFav = post.getChildrenCount();
+                String favPushRetrieval = post.getKey();
+                String favPushTitle = favTitleRetrieval + "," + favPushRetrieval;
+                List<String> favTitleRetrievalList = new ArrayList<String>(Arrays.asList(favPushTitle.split(",")));
+                Log.d("FavoriteNews", favTitleRetrieval + " " + favPushTitle + " " + favTitleRetrievalList);
+                Log.d("FavoriteIDs", favPushRetrieval);
+                // -- Telos Dokimes Eksagogis se lista -- //
             }
 
             @Override
