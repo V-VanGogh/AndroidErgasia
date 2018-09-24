@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,6 +30,7 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,130 +54,155 @@ public class NewsDisplayActivity extends AppCompatActivity {
     DatabaseReference myRef;
 
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_news_display);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_news_display);
 
 
-            // Connect to Firebase //
-            mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
 
-            //--------- Start Cases ---------//
+        //--------- Start Cases ---------//
 
-            //First Case
-            title = this.getIntent().getExtras().getString("TITLE");
-            content = this.getIntent().getExtras().getString("CONTENT");
-            name = this.getIntent().getExtras().getString("NAME");
-            urlImage = this.getIntent().getExtras().getString("URLIMAGE");
+        //First Case
+        title = this.getIntent().getExtras().getString("TITLE");
+        content = this.getIntent().getExtras().getString("CONTENT");
+        name = this.getIntent().getExtras().getString("NAME");
+        urlImage = this.getIntent().getExtras().getString("URLIMAGE");
 
-            //Second Case
-    //        List<Article> article = this.getIntent().getExtras().getParcelableArrayList("Articles");
-    //        int position = this.getIntent().getExtras().getInt("Position");
-    //
-    //        title = article.get(position).getTitle();
-    //        content = article.get(position).getContent();
-    //        name = article.get(position).getSource().getName();
-    //        urlImage = article.get(position).getUrlToImage();
+        //Second Case
+//        List<Article> article = this.getIntent().getExtras().getParcelableArrayList("Articles");
+//        int position = this.getIntent().getExtras().getInt("Position");
+//
+//        title = article.get(position).getTitle();
+//        content = article.get(position).getContent();
+//        name = article.get(position).getSource().getName();
+//        urlImage = article.get(position).getUrlToImage();
 
-            //--------- Stop Cases ---------//
-
-
-            // Use Content
-            Log.d("MessegeTitle", "Set" + title);
-            titleView = findViewById(R.id.txtTitleNewsDetailsActivity);
-            titleView.setText(title);
-
-            Log.d("MessegeContent", "Set" + content);
-            descriptionView = findViewById(R.id.txtContentNewsDetailsActivity);
-            descriptionView.setText(content);
-
-            Log.d("MessegeName", "Set" + name);
-            nameView = findViewById(R.id.txtSourceNewsDetailsActivity);
-            nameView.setText(name);
-
-            Log.d("MessegeUrlImage", "Set" + urlImage);
-            imageView = findViewById(R.id.imgNewsDetailsActivity);
-            Picasso.with(context).load(urlImage).into(imageView);
-
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            myRef = database.getReference("Favorites/").child(mAuth.getUid());
+        //--------- Stop Cases ---------//
 
 
-            // Favorite Stared OnClick //
-            favorite = (ImageView) findViewById(R.id.imgFavoriteNot);
-            favoritetrue = (ImageView) findViewById(R.id.imgFavorite);
-            favorite.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    addFavorite(title, content, name, urlImage);
+        // Use Content
+        Log.d("MessegeTitle", "Set" + title);
+        titleView = findViewById(R.id.txtTitleNewsDetailsActivity);
+        titleView.setText(title);
+
+        Log.d("MessegeContent", "Set" + content);
+        descriptionView = findViewById(R.id.txtContentNewsDetailsActivity);
+        descriptionView.setText(content);
+
+        Log.d("MessegeName", "Set" + name);
+        nameView = findViewById(R.id.txtSourceNewsDetailsActivity);
+        nameView.setText(name);
+
+        Log.d("MessegeUrlImage", "Set" + urlImage);
+        imageView = findViewById(R.id.imgNewsDetailsActivity);
+        Picasso.with(context).load(urlImage).into(imageView);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("Favorites/").child(mAuth.getUid());
+
+        favorite = (ImageView) findViewById(R.id.imgFavoriteNot);
+        favoritetrue = (ImageView) findViewById(R.id.imgFavorite);
+
+        // Add To Favorite //
+        favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                addFavorite(title, content, name, urlImage);
+
+                favorite.setVisibility(View.GONE);
+                favoritetrue.setVisibility(View.VISIBLE);
+            }
+        });
+
+        // Remove to Favorite //
+        favoritetrue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                removeFavorite(title);
+
+                favorite.setVisibility(View.VISIBLE);
+                favoritetrue.setVisibility(View.GONE);
+
+            }
+        });
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mAuth.getCurrentUser() == null) {
+            finish();
+            android.content.Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+        }
+
+
+        myRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                DataSnapshot post = dataSnapshot;
+                FavoriteNewsInformation dataretrieval = post.getValue(FavoriteNewsInformation.class);
+
+                // Disable Stared if Article is Favorite //
+                String favTitleRetrieval = dataretrieval.getTitle().toString();
+                Log.d("FavoriteNews", dataretrieval.getTitle().toString());
+                if (favTitleRetrieval.contains(title)) {
                     favorite.setVisibility(View.GONE);
                     favoritetrue.setVisibility(View.VISIBLE);
                 }
-            });
-        }
 
-        @Override
-        protected void onStart() {
-            super.onStart();
-            if (mAuth.getCurrentUser() == null) {
-                finish();
-                android.content.Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
+                // -- Dokimes Eksagogis se lista -- //
+                long countFav = post.getChildrenCount();
+                String favPushRetrieval = post.getKey();
+                String favPushTitle = favTitleRetrieval + "," + favPushRetrieval;
+                List<String> favTitleRetrievalList = new ArrayList<String>(Arrays.asList(favPushTitle.split(",")));
+                Log.d("FavoriteNews", favTitleRetrieval + " " + favPushTitle + " " + favTitleRetrievalList);
+                Log.d("FavoriteIDs", favPushRetrieval);
+                // -- Telos Dokimes Eksagogis se lista -- //
             }
 
-            // Call Method to Retrieve Data //
-            myRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Log.i("FavoriteNews", "showData:");
-                    // Get Post object and use the values to update the UI
-                    //FavoriteNewsInformation post = dataSnapshot.getValue(FavoriteNewsInformation.class);
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-                    // [START_EXCLUDE]
-//                    Log.d("FavoriteNews", "showData:");
-                    // [END_EXCLUDE]
-                    // This method is called once with the initial value and again
-                    // whenever data at this location is updated.
+            }
 
-                    //showData(dataSnapshot);
-                }
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    // Getting Post failed, log a message
-                    Log.w("ERROR_RETRIEVE", "loadPost:onCancelled", databaseError.toException());
-                    // [START_EXCLUDE]
-                    Toast.makeText(NewsDisplayActivity.this, "Failed to load post.",
-                            Toast.LENGTH_SHORT).show();
-                    // [END_EXCLUDE]
-                }
-            });
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
 
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-        // Add Favorite Article to Firebase //
-        public void addFavorite(String title, String content, String name, String urlImage) {
-            Map<String, Object> taskMap = new HashMap<>();
-            taskMap.put("title", title);
-            taskMap.put("Content", content);
-            taskMap.put("source", name);
-            taskMap.put("UrlImage", urlImage);
-            myRef.push().setValue(taskMap);
-            Log.i("patima", "addFavorite: PUSS");
-        }
+            }
+        });
+    }
 
-        // Retrieve data for Firebase //
-        private void showData(DataSnapshot dataSnapshot) {
-    //        for(DataSnapshot ds : dataSnapshot.getChildren()){
-    //            FavoriteNewsInformation fvInfo = new FavoriteNewsInformation();
-    //            fvInfo.setTitle(ds.child(mAuth.getUid()).getValue(FavoriteNewsInformation.class).getTitle());
-    //            Log.d("FavoriteNews", "showData:" + fvInfo.getTitle());
-//            Log.d("FavoriteNews", "showData:");
-        }
+
+    public void addFavorite(String title, String content, String name, String urlImage) {
+        Map<String, Object> taskMap = new HashMap<>();
+        taskMap.put("title", title);
+        taskMap.put("content", content);
+        taskMap.put("source", name);
+        taskMap.put("urlImage", urlImage);
+        myRef.push().setValue(taskMap);
+    }
+
+    public void removeFavorite(String title) {
+        myRef.child(title)
+                .child("title").setValue(title);
+    }
+
 }
-
-
 
 

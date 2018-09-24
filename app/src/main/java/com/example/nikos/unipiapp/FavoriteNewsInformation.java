@@ -1,9 +1,12 @@
 package com.example.nikos.unipiapp;
 
 public class FavoriteNewsInformation {
-    String content, source, title, urlImage;
+    private String content, source, title, urlImage;
 
     public FavoriteNewsInformation() {
+    }
+
+    public FavoriteNewsInformation(String content, String source, String title, String urlImage) {
         this.content = content;
         this.source = source;
         this.title = title;
@@ -15,7 +18,7 @@ public class FavoriteNewsInformation {
     }
 
     public void setContent(String content) {
-        content = content;
+        this.content = content;
     }
 
     public String getSource() {
@@ -39,6 +42,6 @@ public class FavoriteNewsInformation {
     }
 
     public void setUrlImage(String urlImage) {
-        urlImage = urlImage;
+        this.urlImage = urlImage;
     }
 }
