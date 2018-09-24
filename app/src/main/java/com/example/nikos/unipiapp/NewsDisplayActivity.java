@@ -143,6 +143,7 @@ public class NewsDisplayActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
+
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {

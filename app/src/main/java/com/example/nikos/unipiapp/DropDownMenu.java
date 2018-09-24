@@ -26,7 +26,7 @@ public class DropDownMenu extends AppCompatActivity{
             startActivity(new Intent(this,ProfileActivity.class));
         }
         else if(item.getItemId() == R.id.todo1){
-            startActivity(new Intent(this,MainActivity.class));
+            startActivity(new Intent(this,Favorites.class));
         }
         else if(item.getItemId() == R.id.signout){
             logout();
