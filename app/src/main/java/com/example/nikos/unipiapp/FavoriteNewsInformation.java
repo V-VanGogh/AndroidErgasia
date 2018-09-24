@@ -6,6 +6,10 @@ public class FavoriteNewsInformation {
     public FavoriteNewsInformation() {
     }
 
+    public FavoriteNewsInformation(String title) {
+        this.title = title;
+    }
+
     public FavoriteNewsInformation(String content, String source, String title, String urlImage) {
         this.content = content;
         this.source = source;

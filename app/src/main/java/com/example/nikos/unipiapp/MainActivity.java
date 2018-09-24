@@ -50,8 +50,6 @@ public class MainActivity extends DropDownMenu {
     //String query = "greece";
 
 
-
-
     //Example
     ArrayList<NewsDataModel> newsArrayList;
 
@@ -67,7 +65,6 @@ public class MainActivity extends DropDownMenu {
 //        Toolbar toolbar;
         listView = findViewById(R.id.listNews);
         searchView = findViewById(R.id.SearchView);
-
 
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -122,10 +119,10 @@ public class MainActivity extends DropDownMenu {
                                 String name = newsArrayList.get(position).getArticles().get(position).getSource().getName();
                                 String urlImage = newsArrayList.get(position).getArticles().get(position).getUrlToImage();
                                 Bundle bundle = new Bundle();
-                                bundle.putString("TITLE",title);
-                                bundle.putString("CONTENT",content);
-                                bundle.putString("NAME",name);
-                                bundle.putString("URLIMAGE",urlImage);
+                                bundle.putString("TITLE", title);
+                                bundle.putString("CONTENT", content);
+                                bundle.putString("NAME", name);
+                                bundle.putString("URLIMAGE", urlImage);
                                 Intent newsDisplayActivity = new Intent(MainActivity.this, NewsDisplayActivity.class);
                                 newsDisplayActivity.putExtras(bundle);
                                 startActivity(newsDisplayActivity);
@@ -205,10 +202,10 @@ public class MainActivity extends DropDownMenu {
                                 String name = newsArrayList.get(position).getArticles().get(position).getSource().getName();
                                 String urlImage = newsArrayList.get(position).getArticles().get(position).getUrlToImage();
                                 Bundle bundle = new Bundle();
-                                bundle.putString("TITLE",title);
-                                bundle.putString("CONTENT",content);
-                                bundle.putString("NAME",name);
-                                bundle.putString("URLIMAGE",urlImage);
+                                bundle.putString("TITLE", title);
+                                bundle.putString("CONTENT", content);
+                                bundle.putString("NAME", name);
+                                bundle.putString("URLIMAGE", urlImage);
                                 Intent newsDisplayActivity = new Intent(MainActivity.this, NewsDisplayActivity.class);
                                 newsDisplayActivity.putExtras(bundle);
                                 startActivity(newsDisplayActivity);

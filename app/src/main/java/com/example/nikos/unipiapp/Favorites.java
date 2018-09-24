@@ -89,6 +89,7 @@ public class Favorites  extends DropDownMenu  {
     }
 
     private void showData(DataSnapshot dataSnapshot) {
+        ArrayList<String> array = new ArrayList<>();
         for (DataSnapshot ds : dataSnapshot.getChildren()) {
             DataSnapshot post = dataSnapshot;
             FavoriteNewsInformation dataretrieval = post.getValue(FavoriteNewsInformation.class);
@@ -102,7 +103,7 @@ public class Favorites  extends DropDownMenu  {
             Log.d(TAG, "Title:" + dataretrieval.getTitle());
             Log.d(TAG, "UrlImage:" + dataretrieval.getUrlImage());
 
-            ArrayList<String> array = new ArrayList<>();
+
             array.add(dataretrieval.getContent());
             array.add(dataretrieval.getSource());
             array.add(dataretrieval.getTitle());
@@ -112,6 +113,8 @@ public class Favorites  extends DropDownMenu  {
             fListView.setAdapter(adapter);
 
         }
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, array);
+        fListView.setAdapter(adapter);
     }
 
     @Override
